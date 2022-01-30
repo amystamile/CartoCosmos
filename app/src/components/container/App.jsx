@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Component } from "react";
 import Paper from "@material-ui/core/Paper";
 import { makeStyles } from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
@@ -58,6 +58,13 @@ export default function App() {
     setTargetPlanet(event.target.value);
   };
 
+  window.addEventListener("DOMContentLoaded", () => {
+    var map = new L.map('geoTIFF-map').setView([51.505, -0.09], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+  }).addTo(map);
+  });
+
   return (
     <div>
       <div className={classes.container}>
@@ -114,6 +121,9 @@ export default function App() {
           <SearchAndFilterInput />
         </div>
       </Paper>
+      <div>
+        <div id="geoTIFF-map"/>
+      </div>
     </div>
   );
 }

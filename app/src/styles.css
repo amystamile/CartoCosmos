@@ -14,6 +14,14 @@
   max-height: 950px;
 }
 
+#geoTIFF-map {
+  width: 800px;
+  height: 600px;
+  position: absolute;
+  top: 80px;
+  right: 50px;
+}
+
 /*
 Controls the CSS for projection buttons when there is no available projection
 */
