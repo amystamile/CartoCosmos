@@ -14,6 +14,9 @@ import CreditsDisplay from "../presentational/CreditsDisplay.jsx";
 import SearchAndFilterInput from "../presentational/SearchAndFilterInput.jsx";
 import AdapterDateFns from '@mui/lab/AdapterDateFns';
 import LocalizationProvider from '@mui/lab/LocalizationProvider';
+import parse_georaster from "georaster";
+import GeoRasterLayer from "georaster-layer-for-leaflet";
+import "proj4leaflet";
 
 /**
  * Controls css styling for this component using js to css
@@ -59,71 +62,32 @@ export default function App() {
   };
 
   window.addEventListener("DOMContentLoaded", () => {
-    var map = new L.map('geoTIFF-map').setView([51.505, -0.09], 13);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-  }).addTo(map);
+  var map = new L.map('geoTIFF-map').setView([0,0], 1, true);
+  L.tileLayer('').addTo(map);
+
+  var url_to_geotiff_file = "B02output.tif";
+  var layer;
+  var collection = {};
+  fetch(url_to_geotiff_file)
+    .then(response => response.arrayBuffer())
+    .then(arrayBuffer => {
+      parse_georaster(arrayBuffer).then(georaster => {
+        console.log("georaster:", georaster);
+        layer = new GeoRasterLayer({
+            georaster: georaster,
+            debugLevel: 1
+        })
+        console.log(layer);
+        collection["geoTIFF"] = layer;
+        L.control.layers(null, collection).addTo(map);
+
+      });
+    });
   });
 
   return (
     <div>
-      <div className={classes.container}>
-        <FormControl className={classes.formControl}>
-          <InputLabel htmlFor="grouped-select">Target Body</InputLabel>
-          <Select
-            defaultValue={1}
-            onChange={handleChange}
-            value={targetPlanet}
-            input={<Input id="grouped-select" />}
-          >
-            <ListSubheader value="Mercury">Planets</ListSubheader>
-            <MenuItem value="Mercury">Mercury</MenuItem>
-            <MenuItem value="Venus">Venus</MenuItem>
-            <MenuItem value="Earth">Earth</MenuItem>
-            <MenuItem value="Mars">Mars</MenuItem>
-            <MenuItem value="Jupiter">Jupiter</MenuItem>
-            <MenuItem value="Saturn">Saturn</MenuItem>
-            <MenuItem value="Uranus">Uranus</MenuItem>
-            <MenuItem value="Neptune">Neptune</MenuItem>
-            <MenuItem value="Pluto">Pluto (yeah, a planet)</MenuItem>
-            <ListSubheader value="Moon">Moons and Other Bodies</ListSubheader>
-            <MenuItem value="Moon">Moon</MenuItem>
-            <MenuItem value="Ceres">Ceres</MenuItem>
-            <MenuItem value="Mimas">Mimas</MenuItem>
-            <MenuItem value="Titan">Titan</MenuItem>
-            <MenuItem value="Deimos">Deimos</MenuItem>
-            <MenuItem value="Tethys">Tethys</MenuItem>
-            <MenuItem value="Phoebe">Phoebe</MenuItem>
-            <MenuItem value="Iapetus">Iapetus</MenuItem>
-            <MenuItem value="Dione">Dione</MenuItem>
-            <MenuItem value="Enceladus">Enceladus</MenuItem>
-            <MenuItem value="Hyperion">Hyperion</MenuItem>
-            <MenuItem value="Io">Io</MenuItem>
-            <MenuItem value="Callisto">Callisto</MenuItem>
-            <MenuItem value="Europa">Europa</MenuItem>
-            <MenuItem value="Ganymede">Ganymede</MenuItem>
-            <MenuItem value="Rhea">Rhea</MenuItem>
-            <MenuItem value="Phobos">Phobos</MenuItem>
-            <MenuItem value="Vesta">Vesta</MenuItem>
-            <MenuItem value="Charon">Charon</MenuItem>
-          </Select>
-        </FormControl>
-        {/* <AutoCompleteInput className={classes.autoComplete} /> */}
-      </div>
-      <Paper elevation={10} className={classes.appPaper}>
-        <div>
-          <ConsoleContainer target={targetPlanet} />
-          <MapContainer target={targetPlanet} />
-          <WellKnownTextInput />
-          <CreditsDisplay />
-        </div>
-        <div className={classes.rightSidebar}>
-          <SearchAndFilterInput />
-        </div>
-      </Paper>
-      <div>
         <div id="geoTIFF-map"/>
       </div>
-    </div>
-  );
+  )
 }

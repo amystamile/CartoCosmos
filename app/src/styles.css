@@ -5,28 +5,30 @@
 
 
 #map-container {
-  width: 800px;
-  height: 600px;
+  /* width: 800px;
+  height: 600px; */
 }
 
 #map {
-  width: 1027px;
-  max-height: 950px;
+  /* width: 1027px;
+  max-height: 950px; */
 }
 
 #geoTIFF-map {
-  width: 800px;
+  /* width: 800px;
   height: 600px;
-  position: absolute;
   top: 80px;
-  right: 50px;
+  right: 50px; */
+  position: absolute;
+  width: 100%;
+  height: 100%;
 }
 
 /*
 Controls the CSS for projection buttons when there is no available projection
 */
 
-.disabled {
+/* .disabled {
   opacity: 40%;
 }
 
@@ -156,4 +158,4 @@ summary {
   float: left;
   padding: 8px 16px;
   text-decoration: none;
-}
+} */
